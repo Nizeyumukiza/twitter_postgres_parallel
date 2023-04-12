@@ -13,7 +13,7 @@ CREATE TABLE users (
     id_users BIGINT PRIMARY KEY,
     created_at TIMESTAMPTZ,
     updated_at TIMESTAMPTZ,
-    url TEXT
+    url TEXT,
     friends_count INTEGER,
     listed_count INTEGER,
     favourites_count INTEGER,
@@ -24,7 +24,7 @@ CREATE TABLE users (
     name TEXT,
     location TEXT,
     description TEXT,
-    withheld_in_countries VARCHAR(2)[],
+    withheld_in_countries VARCHAR(2)[]
 );
 
 /*
@@ -48,15 +48,8 @@ CREATE TABLE tweets (
     state_code VARCHAR(2),
     lang TEXT,
     place_name TEXT,
-    geo geometry,
-    FOREIGN KEY (id_users) REFERENCES users(id_users),
-    FOREIGN KEY (in_reply_to_user_id) REFERENCES users(id_users)
+    geo geometry
 
-    -- NOTE:
-    -- We do not have the following foreign keys because they would require us
-    -- to store many unhydrated tweets in this table.
-    -- FOREIGN KEY (in_reply_to_status_id) REFERENCES tweets(id_tweets),
-    -- FOREIGN KEY (quoted_status_id) REFERENCES tweets(id_tweets)
 );
 CREATE INDEX tweets_index_geo ON tweets USING gist(geo);
 CREATE INDEX tweets_index_withheldincountries ON tweets USING gin(withheld_in_countries);
@@ -64,25 +57,18 @@ CREATE INDEX tweets_index_withheldincountries ON tweets USING gin(withheld_in_co
 CREATE TABLE tweet_urls (
     id_tweets BIGINT,
     url TEXT
-    PRIMARY KEY (id_tweets, id_urls),
-    FOREIGN KEY (id_tweets) REFERENCES tweets(id_tweets),
 );
 
 
 CREATE TABLE tweet_mentions (
     id_tweets BIGINT,
-    id_users BIGINT,
-    PRIMARY KEY (id_tweets, id_users),
-    FOREIGN KEY (id_tweets) REFERENCES tweets(id_tweets),
-    FOREIGN KEY (id_users) REFERENCES users(id_users)
+    id_users BIGINT
 );
 CREATE INDEX tweet_mentions_index ON tweet_mentions(id_users);
 
 CREATE TABLE tweet_tags (
     id_tweets BIGINT,
-    tag TEXT,
-    PRIMARY KEY (id_tweets, tag),
-    FOREIGN KEY (id_tweets) REFERENCES tweets(id_tweets)
+    tag TEXT
 );
 COMMENT ON TABLE tweet_tags IS 'This table links both hashtags and cashtags';
 CREATE INDEX tweet_tags_index ON tweet_tags(id_tweets);
@@ -90,10 +76,8 @@ CREATE INDEX tweet_tags_index ON tweet_tags(id_tweets);
 
 CREATE TABLE tweet_media (
     id_tweets BIGINT,
-    url TEXT
-    type TEXT,
-    PRIMARY KEY (id_tweets, id_urls),
-    FOREIGN KEY (id_tweets) REFERENCES tweets(id_tweets)
+    url TEXT,
+    type TEXT
 );
 
 /*
