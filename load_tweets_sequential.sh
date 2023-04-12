@@ -19,6 +19,6 @@ echo '==========================================================================
 echo '================================================================================'
 echo 'load pg_normalized_batch'
 echo '================================================================================'
-time for file in $files; do
-    bash load_normalized_batch.sh $file
-done 
+#time for file in $files; do
+ #   bash load_normalized_batch.sh $file
+#done 

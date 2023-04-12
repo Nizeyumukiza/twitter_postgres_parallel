@@ -374,9 +374,8 @@ def _insert_tweets(connection,input_tweets):
     ######################################## 
     
     while True:
-        try:
-           with connection.begin() as trans:
-
+        #with connection.begin() as trans:
+            try:
                 # use the bulk_insert function to insert most of the data
                 bulk_insert(connection, 'users', users)
                 bulk_insert(connection, 'users', users_unhydrated_from_tweets)
@@ -407,14 +406,10 @@ def _insert_tweets(connection,input_tweets):
                         '''
                         )
                 res = connection.execute(sql, { key+str(i):value for i,tweet in enumerate(tweets) for key,value in tweet.items() })
-        
-        except sqlalchemy.exc.InvalidRequestError as e:
-            trans.rollback()
-        except sqlalchemy.exc.OperationalError as e:
-            print("here0")
-            trans.rollback()
-            continue
-        break
+            except sqlalchemy.exc.OperationalError as e:
+                print("here0")
+                continue
+            break
             
 
 if __name__ == '__main__':
