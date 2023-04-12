@@ -12,9 +12,9 @@ done
 echo '================================================================================'
 echo 'load pg_normalized'
 echo '================================================================================'
-#time for file in $files; do
- #   bash load_normalized.sh $file
-#done
+time for file in $files; do
+    bash load_normalized.sh $file
+done
 
 echo '================================================================================'
 echo 'load pg_normalized_batch'
